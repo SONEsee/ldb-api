@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql/mysql-server:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: personal 
+      MYSQL_USER: personal
+      MYSQL_PASSWORD: personal@123
+      MYSQL_ROOT_PASSWORD: personal@123
+      TZ: Asia/Bangkok
+    ports:
+      - "3310:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./init_mysql:/docker-entrypoint-initdb.d/:ro
+  admin:
+    image: phpmyadmin:latest
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      TZ: Asia/Bangkok
+    restart: always
+    ports:
+      - 8081:80

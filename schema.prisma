@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model dristric {
+  dr_id      Int       @id
+  dr_name    String    @db.VarChar(200)
+  dr_name_en String    @db.VarChar(200)
+  pr_id      Int
+  province   province  @relation(fields: [pr_id], references: [pr_id], onUpdate: Restrict, map: "dristric_province_pr_id_fk")
+  village    village[]
+
+  @@index([pr_id], map: "dristric_province_pr_id_fk")
+}
+
+model province {
+  pr_id      Int        @id
+  pr_name    String     @db.VarChar(200)
+  pr_name_en String     @db.VarChar(200)
+  dristric   dristric[]
+}
+
+model users {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(50)
+  surename      String?  @db.VarChar(50)
+  date_of_birth DateTime @db.Date
+  occupation    String?  @db.VarChar(50)
+  image         String?  @db.Text
+  position      String?  @db.VarChar(50)
+  village_id    Int      @db.UnsignedInt
+  village       village  @relation(fields: [village_id], references: [vill_id], onUpdate: Restrict, map: "users_village_vill_id_fk")
+
+  @@index([village_id], map: "users_village_vill_id_fk")
+}
+
+model village {
+  vill_id      Int      @id @unique(map: "vill_id") @db.UnsignedInt
+  vill_name    String   @db.VarChar(200)
+  vill_name_en String   @db.VarChar(200)
+  dr_id        Int
+  users        users[]
+  dristric     dristric @relation(fields: [dr_id], references: [dr_id], onUpdate: Restrict, map: "village_dristric_dr_id_fk")
+
+  @@index([dr_id], map: "village_dristric_dr_id_fk")
+}

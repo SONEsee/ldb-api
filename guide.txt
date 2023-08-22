@@ -1,0 +1,14 @@
+### DUMP TABLE TO YOUR DATABASE ####
+-- copy table to docker container --
+command : docker cp $PATH_YOUR_TABLE $DOCKER_CONTAINER_ID:/$NEW_FILE_NAME.sql
+##example : docker cp migrations/lao-province-district-villages.sql 5b2647227098:/lao_province.sql
+
+
+-- access container for dump table --
+## command: docker exec -it $DOCKER_CONTAINER_ID 
+example : docker exec -it 54281d2641fa  bin/bash
+
+
+--run mysql command --
+mysql -u username -p databasename < path/example.sql
+
